@@ -16,6 +16,8 @@ public class Window {
 
     private String title;
 
+    private GLFWErrorCallback errorCallback;
+
 
     public Window(int width, int height, String title) {
         this.width = width;
@@ -25,7 +27,8 @@ public class Window {
 
     public void init(){
 
-        GLFWErrorCallback.createPrint(System.err).set();
+        errorCallback = GLFWErrorCallback.createPrint(System.err);
+        errorCallback.set();
 
         if(!glfwInit()){
             throw new RuntimeException("Unable to initialize GLFW");
@@ -81,5 +84,9 @@ public class Window {
     public void destroy(){
         glfwDestroyWindow(window);
         glfwTerminate();
+
+        if(errorCallback != null){
+            errorCallback.free();
+        }
     }
 }
