@@ -85,8 +85,13 @@ public class Window {
         glfwDestroyWindow(window);
         glfwTerminate();
 
+        window = NULL;
+
+        glfwSetErrorCallback(null);
+
         if(errorCallback != null){
             errorCallback.free();
+            errorCallback = null;
         }
     }
 
