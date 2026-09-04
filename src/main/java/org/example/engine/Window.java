@@ -89,4 +89,14 @@ public class Window {
             errorCallback.free();
         }
     }
+
+    public int  getWidth(){
+        return width;
+    }
+    public int getHeight(){
+        return height;
+    }
+    public long getHandle() {
+        return window;
+    }
 }
