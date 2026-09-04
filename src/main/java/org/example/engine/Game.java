@@ -23,15 +23,32 @@ public class Game {
     }
 
     private void loop() {
-        int i = 0;
+
         while(!window.shouldClose()){
 
-            window.update();
-            i++;
-            window.setTitle("Island Survival Game: " + i / 10000);
+            input();
 
+            update();
+
+            render();
+
+            window.update();
         }
     }
+
+    private void render() {
+
+    }
+
+    private void input() {
+
+    }
+
+    private void update() {
+
+
+    }
+
 
     private void cleanup() {
         window.destroy();
