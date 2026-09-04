@@ -1,5 +1,7 @@
 package org.example.engine;
 
+import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
+
 public class Game {
 
     private Window window;
@@ -21,9 +23,13 @@ public class Game {
     }
 
     private void loop() {
+        int i = 0;
         while(!window.shouldClose()){
 
             window.update();
+            i++;
+            window.setTitle("Island Survival Game: " + i / 10000);
+
         }
     }
 
