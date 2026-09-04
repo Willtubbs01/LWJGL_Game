@@ -78,7 +78,11 @@ public class Window {
     }
 
     public void update(){
+
+        glfwSwapBuffers(window);
+
         glfwPollEvents();
+
     }
 
     public void destroy(){
