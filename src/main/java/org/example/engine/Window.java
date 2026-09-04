@@ -1,6 +1,10 @@
 package org.example.engine;
 
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL;
+
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
@@ -21,10 +25,23 @@ public class Window {
 
     public void init(){
 
+        GLFWErrorCallback.createPrint(System.err).set();
 
         if(!glfwInit()){
             throw new RuntimeException("Unable to initialize GLFW");
         }
+
+        glfwDefaultWindowHints();
+
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 
         window = glfwCreateWindow(width, height, title, NULL, NULL);
 
@@ -33,6 +50,23 @@ public class Window {
         }
 
         glfwMakeContextCurrent(window);
+
+        glfwSwapInterval(1);
+
+        GL.createCapabilities();
+
+        System.out.println(
+                "OpenGL Version: " + glGetString(GL_VERSION)
+        );
+
+        System.out.println(
+                "Renderer: " + glGetString(GL_RENDERER)
+        );
+
+        System.out.println(
+                "Vendor: " + glGetString(GL_VENDOR)
+        );
+
         glfwShowWindow(window);
     }
 
