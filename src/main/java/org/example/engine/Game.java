@@ -1,6 +1,8 @@
 package org.example.engine;
 
-import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
+import org.lwjgl.glfw.GLFW;
+
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Game {
@@ -32,11 +34,17 @@ public class Game {
 
     private void loop() {
 
+        double lastTime = glfwGetTime();
+
         while(!window.shouldClose()){
+
+            double currentTime = glfwGetTime();
+            double deltaTime = currentTime - lastTime;
+            lastTime = currentTime;
 
             input();
 
-            update();
+            update(deltaTime);
 
             render();
 
@@ -54,7 +62,7 @@ public class Game {
 
     }
 
-    private void update() {
+    private void update(double dt) {
 
 
     }
