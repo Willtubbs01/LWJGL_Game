@@ -1,6 +1,7 @@
 package org.example.engine;
 
 import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
+import static org.lwjgl.opengl.GL11.*;
 
 public class Game {
 
@@ -20,6 +21,13 @@ public class Game {
         );
 
         window.init();
+
+        glClearColor(
+                0.0f,
+                0.0f,
+                0.0f,
+                1.0f
+        );
     }
 
     private void loop() {
@@ -37,6 +45,8 @@ public class Game {
     }
 
     private void render() {
+
+        glClear(GL_COLOR_BUFFER_BIT);
 
     }
 
