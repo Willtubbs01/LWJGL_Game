@@ -9,8 +9,16 @@ public class Game {
 
     private Window window;
 
-    private static final int UPS = 60;
-    private static final double UPDATE_INTERVAL = 1.0 / UPS;
+    private static final int TARGET_FPS = 60;
+    private static final double UPDATE_INTERVAL = 1.0 / TARGET_FPS;
+
+    private static final double MAX_FRAME_TIME = 0.25;
+
+    private double lastTime;
+    private double statsTimer;
+
+    private int frames;
+    private int updates;
 
     public void run(){
         init();
@@ -33,12 +41,14 @@ public class Game {
                 0.0f,
                 1.0f
         );
+
+
+        lastTime = glfwGetTime();
+        statsTimer = lastTime;
+
     }
 
     private void loop() {
-
-        double lastTime = glfwGetTime();
-
         double accumulator = 0.0;
 
         while(!window.shouldClose()){
@@ -47,8 +57,8 @@ public class Game {
             double frameTime = currentTime - lastTime;
             lastTime = currentTime;
 
-            if (frameTime > 0.25) {
-                frameTime = 0.25;
+            if (frameTime > MAX_FRAME_TIME) {
+                frameTime = MAX_FRAME_TIME;
             }
 
             accumulator += frameTime;
@@ -57,9 +67,13 @@ public class Game {
 
             while(accumulator >= UPDATE_INTERVAL) {
                 update(UPDATE_INTERVAL);
+                updates++;
                 accumulator -= UPDATE_INTERVAL;
             }
             render();
+            frames++;
+
+            updateStats(currentTime);
 
             window.update();
         }
@@ -80,8 +94,22 @@ public class Game {
 
     }
 
-
     private void cleanup() {
         window.destroy();
+    }
+
+    private void updateStats(double currentTime) {
+
+        if(currentTime - statsTimer >= 1.0){
+            window.setTitle("Island Escape | FPS: "+
+                    frames +
+                    " | UPS: " +
+                    updates
+            );
+
+            frames = 0;
+            updates = 0;
+            statsTimer += 1.0;
+        }
     }
 }
