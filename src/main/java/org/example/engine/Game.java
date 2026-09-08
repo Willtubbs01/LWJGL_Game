@@ -75,7 +75,7 @@ public class Game {
 
             updateStats(currentTime);
 
-            window.update();
+            window.endFrame();
         }
     }
 

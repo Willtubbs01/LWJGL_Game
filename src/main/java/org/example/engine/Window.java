@@ -77,7 +77,7 @@ public class Window {
         return glfwWindowShouldClose(window);
     }
 
-    public void update(){
+    public void endFrame(){
 
         glfwSwapBuffers(window);
 
