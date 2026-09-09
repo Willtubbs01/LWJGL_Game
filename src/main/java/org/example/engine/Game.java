@@ -41,8 +41,16 @@ public class Game {
 
     private void init(){
 
+        window = new Window(
+                1280,
+                720,
+                "Island Survival Game"
+        );
+
+        window.init();
+
         float[] vertices = {
-                0,0f, 0.5f, 0.0f,
+                0.0f, 0.5f, 0.0f,
                 -0.5f, -0.5f, 0.0f,
                 0.5f, -0.5f, 0.0f,
         };
@@ -57,16 +65,18 @@ public class Game {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 
-        try{
-            MemoryStack stack = MemoryStack.stackPush();
-            FloatBuffer verticesBuffer = stack.mallocFloat(vertices.length);
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+
+            FloatBuffer verticesBuffer =
+                    stack.mallocFloat(vertices.length);
 
             verticesBuffer.put(vertices).flip();
 
-            glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
-
-        } catch(OutOfMemoryError e){
-            e.printStackTrace();
+            glBufferData(
+                    GL_ARRAY_BUFFER,
+                    verticesBuffer,
+                    GL_STATIC_DRAW
+            );
         }
 
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 3*Float.BYTES, 0);
@@ -78,20 +88,12 @@ public class Game {
         glBindVertexArray(0);
 
 
-        window = new Window(
-                1280,
-                720,
-                "Island Survival Game"
-        );
-
-        window.init();
-
         shaderProgram = new ShaderProgram("/shaders/vertex.glsl", "/shaders/fragment.glsl");
 
         glClearColor(
-                0.0f,
-                0.0f,
-                0.0f,
+                0.1f,
+                0.6f,
+                0.85f,
                 1.0f
         );
 
@@ -139,6 +141,11 @@ public class Game {
 
         shaderProgram.bind();
 
+        glBindVertexArray(vao);
+
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+
+        glBindVertexArray(0);
 
         shaderProgram.unbind();
 
