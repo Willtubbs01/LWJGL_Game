@@ -1,9 +1,13 @@
 package org.example.engine;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.FloatBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
 
 public class Game {
 
@@ -20,6 +24,8 @@ public class Game {
     private int frames;
     private int updates;
 
+    private int vbo;
+
     public void run(){
         init();
         loop();
@@ -27,6 +33,30 @@ public class Game {
     }
 
     private void init(){
+
+        float[] vertices = {
+                0,0f, 0.5f, 0.0f,
+                -0.5f, -0.5f, 0.0f,
+                0.5f, -0.5f, 0.0f,
+        };
+
+        vbo = glGenBuffers();
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+        try{
+            MemoryStack stack = MemoryStack.stackPush();
+            FloatBuffer verticesBuffer = stack.mallocFloat(vertices.length);
+
+            verticesBuffer.put(vertices).flip();
+
+            glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);
+
+        } catch(OutOfMemoryError e){
+            e.printStackTrace();
+        }
+
+
         window = new Window(
                 1280,
                 720,
@@ -45,6 +75,8 @@ public class Game {
 
         lastTime = glfwGetTime();
         statsTimer = lastTime;
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     }
 
@@ -95,6 +127,12 @@ public class Game {
     }
 
     private void cleanup() {
+
+        if(vbo != 0) {
+            glDeleteBuffers(vbo);
+            vbo = 0;
+        }
+
         window.destroy();
     }
 
