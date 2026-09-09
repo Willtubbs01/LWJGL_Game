@@ -1,5 +1,6 @@
 package org.example.engine;
 
+import org.example.graphics.Mesh;
 import org.example.graphics.ShaderProgram;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
@@ -26,12 +27,9 @@ public class Game {
     private int frames;
     private int updates;
 
-    private int vbo;
-    private int vao;
-
-    private int vertexCount;
-
     private ShaderProgram shaderProgram;
+
+    private Mesh triangleMesh;
 
     public void run(){
         init();
@@ -50,42 +48,20 @@ public class Game {
         window.init();
 
         float[] vertices = {
-                0.0f, 0.5f, 0.0f,
+
+                // triangle 1
+                -0.5f,  0.5f, 0.0f,
                 -0.5f, -0.5f, 0.0f,
                 0.5f, -0.5f, 0.0f,
+
+                // triangle 2
+                -0.5f,  0.5f, 0.0f,
+                0.5f, -0.5f, 0.0f,
+                0.5f,  0.5f, 0.0f
         };
 
-        vertexCount = vertices.length/3;
+        triangleMesh = new Mesh(vertices);
 
-        vao = glGenVertexArrays();
-        glBindVertexArray(vao);
-
-
-        vbo = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-
-            FloatBuffer verticesBuffer =
-                    stack.mallocFloat(vertices.length);
-
-            verticesBuffer.put(vertices).flip();
-
-            glBufferData(
-                    GL_ARRAY_BUFFER,
-                    verticesBuffer,
-                    GL_STATIC_DRAW
-            );
-        }
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 3*Float.BYTES, 0);
-
-        glEnableVertexAttribArray(0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        glBindVertexArray(0);
 
 
         shaderProgram = new ShaderProgram("/shaders/vertex.glsl", "/shaders/fragment.glsl");
@@ -141,11 +117,7 @@ public class Game {
 
         shaderProgram.bind();
 
-        glBindVertexArray(vao);
-
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-
-        glBindVertexArray(0);
+        triangleMesh.render();
 
         shaderProgram.unbind();
 
@@ -162,15 +134,10 @@ public class Game {
 
     private void cleanup() {
 
-        if(vbo != 0) {
-            glDeleteBuffers(vbo);
-            vbo = 0;
+        if(triangleMesh != null){
+            triangleMesh.destroy();
         }
 
-        if(vao != 0) {
-            glDeleteVertexArrays(vao);
-            vao = 0;
-        }
 
         if(shaderProgram != null) {
             shaderProgram.destroy();
