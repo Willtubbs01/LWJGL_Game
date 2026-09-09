@@ -8,6 +8,7 @@ import java.nio.FloatBuffer;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Game {
 
@@ -25,6 +26,9 @@ public class Game {
     private int updates;
 
     private int vbo;
+    private int vao;
+
+    private int vertexCount;
 
     public void run(){
         init();
@@ -40,9 +44,15 @@ public class Game {
                 0.5f, -0.5f, 0.0f,
         };
 
-        vbo = glGenBuffers();
+        vertexCount = vertices.length/3;
 
+        vao = glGenVertexArrays();
+        glBindVertexArray(vao);
+
+
+        vbo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
 
         try{
             MemoryStack stack = MemoryStack.stackPush();
@@ -55,6 +65,14 @@ public class Game {
         } catch(OutOfMemoryError e){
             e.printStackTrace();
         }
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 3*Float.BYTES, 0);
+
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glBindVertexArray(0);
 
 
         window = new Window(
@@ -76,7 +94,6 @@ public class Game {
         lastTime = glfwGetTime();
         statsTimer = lastTime;
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     }
 
@@ -131,6 +148,11 @@ public class Game {
         if(vbo != 0) {
             glDeleteBuffers(vbo);
             vbo = 0;
+        }
+
+        if(vao != 0) {
+            glDeleteVertexArrays(vao);
+            vao = 0;
         }
 
         window.destroy();
