@@ -1,5 +1,6 @@
 package org.example.engine;
 
+import org.example.graphics.ShaderProgram;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
 
@@ -29,6 +30,8 @@ public class Game {
     private int vao;
 
     private int vertexCount;
+
+    private ShaderProgram shaderProgram;
 
     public void run(){
         init();
@@ -83,6 +86,8 @@ public class Game {
 
         window.init();
 
+        shaderProgram = new ShaderProgram("/shaders/vertex.glsl", "/shaders/fragment.glsl");
+
         glClearColor(
                 0.0f,
                 0.0f,
@@ -132,6 +137,11 @@ public class Game {
 
         glClear(GL_COLOR_BUFFER_BIT);
 
+        shaderProgram.bind();
+
+
+        shaderProgram.unbind();
+
     }
 
     private void input() {
@@ -153,6 +163,10 @@ public class Game {
         if(vao != 0) {
             glDeleteVertexArrays(vao);
             vao = 0;
+        }
+
+        if(shaderProgram != null) {
+            shaderProgram.destroy();
         }
 
         window.destroy();
